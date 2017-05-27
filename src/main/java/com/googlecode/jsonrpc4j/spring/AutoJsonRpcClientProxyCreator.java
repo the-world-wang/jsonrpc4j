@@ -1,6 +1,7 @@
 package com.googlecode.jsonrpc4j.spring;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.googlecode.jsonrpc4j.JsonRpcClient.RequestListener;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public class AutoJsonRpcClientProxyCreator implements BeanFactoryPostProcessor, 
 	private URL baseUrl;
 	private ObjectMapper objectMapper;
 	private String contentType;
+	private RequestListener requestListener;
 	
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -88,6 +90,10 @@ public class AutoJsonRpcClientProxyCreator implements BeanFactoryPostProcessor, 
 			beanDefinitionBuilder.addPropertyValue("contentType", contentType);
 		}
 		
+		if (requestListener != null) {
+			beanDefinitionBuilder.addPropertyValue("requestListener", requestListener);
+		}
+		
 		defaultListableBeanFactory.registerBeanDefinition(className + "-clientProxy", beanDefinitionBuilder.getBeanDefinition());
 	}
 	
@@ -121,5 +127,13 @@ public class AutoJsonRpcClientProxyCreator implements BeanFactoryPostProcessor, 
 	
 	public void setContentType(String contextType) {
 		this.contentType = contextType;
+	}
+
+	public RequestListener getRequestListener() {
+		return requestListener;
+	}
+
+	public void setRequestListener(RequestListener requestListener) {
+		this.requestListener = requestListener;
 	}
 }
